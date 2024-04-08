@@ -26,6 +26,7 @@ def r_chain_move(sx, sy, s_num, d):
     if 1 <= sx <= N and 1 <= sy <= N:
         if board[sx][sy]: #새로 이동할 위치에 산타가 있다면
             new = board[sx][sy]
+            board[sx][sy] = new
             nsx, nsy = sx + rdx[d], sy + rdy[d] #다음 칸 탐색
             r_chain_move(nsx, nsy, new, d)
         board[sx][sy] = s_num
@@ -38,11 +39,14 @@ def r_chain_move(sx, sy, s_num, d):
 
 def s_chain_move(sx, sy, s_num, d):
     global remain
+    #print("s_chain move", sx, sy, s_num, d)
+    #debug()
     # 밀려난 산타
     # 밀려난 산타가 갈 곳
     if 1 <= sx <= N and 1 <= sy <= N:
         if board[sx][sy]:
             new = board[sx][sy]
+            board[sx][sy] = 0
             nsx, nsy = sx + sdx[d], sy + sdy[d]
             s_chain_move(nsx, nsy, new, d)
         board[sx][sy] = s_num
@@ -97,6 +101,7 @@ def ru_move():
         if 1 <= nsx <= N and 1 <= nsy <= N:
             if board[nsx][nsy]: #날라갔는데 또 산타가 있다면
                 new = board[nsx][nsy] #임시저장
+                board[nsx][nsy] = 0
                 nnsx, nnsy = nsx + rdx[nd], nsy + rdy[nd]
                 r_chain_move(nnsx, nnsy, new, nd)
 
@@ -138,6 +143,7 @@ def santa_move():
         nsx, nsy, nd = candidates[0] #산타가 이동할 곳
 
         nd = (nd + 2) % 4
+        board[sx][sy] = 0 #기존 자리 제거
         if board[nsx][nsy] == -1: #루돌프 있다면
             nsx, nsy = nsx + sdx[nd]*D, nsy + sdy[nd]*D
             santas[i][3] += D #점수 획득
@@ -147,6 +153,7 @@ def santa_move():
             if 1 <= nsx <= N and 1 <= nsy <= N:
                 if board[nsx][nsy]:
                     new = board[nsx][nsy]
+                    board[nsx][nsy] = 0
                     nnsx, nnsy = nsx + sdx[nd], nsy + sdy[nd]
                     s_chain_move(nnsx, nnsy, new, nd)
                 board[nsx][nsy] = i
@@ -158,13 +165,21 @@ def santa_move():
         else:#아무도 없다면
             board[nsx][nsy] = i
             santas[i][2] = [nsx, nsy]
-        board[sx][sy] = 0 #기존 자리 제거
 
     return
 
-for m in range(M):
+
+#debug()
+for m in range(1, M + 1):
+    #print(f"{m}th")
+    #print("ru_move")
     ru_move()
+    #debug()
+    #print("santa_move")
     santa_move()
+    #debug()
+    #print("remain", remain)
+
     if remain == 0:
         break
 
@@ -172,6 +187,15 @@ for m in range(M):
         if santas[i][0]:
             continue
         santas[i][3] += 1
+    #print("scores :", [santas[i][3] for i in range(1, P + 1)])
 
 for i in range(1, P + 1):
     print(santas[i][3], end=" ")
+'''
+5 7 4 2 2
+3 2
+1 1 3
+2 3 5
+3 5 1
+4 4 4
+'''
