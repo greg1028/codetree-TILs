@@ -9,7 +9,12 @@ def debug(board):
 
 def rotate_maze(tmp):
     n = len(tmp)
-    return [[tmp[i][j] - 1 if tmp[i][j] > 0 else tmp[i][j] for i in range(n - 1, -1, -1)] for j in range(n)]
+    new = [[tmp[i][j] for i in range(n - 1, -1, -1)] for j in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if new[i][j]:
+                new[i][j] -= 1
+    return new
 
 def find_to_rotate():
     n = 2
