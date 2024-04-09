@@ -7,8 +7,7 @@ def debug(board):
         print()
     print()
 
-def rotate_maze(tmp):
-    n = len(tmp)
+def rotate_maze(tmp, n):
     new = [[tmp[i][j] for i in range(n - 1, -1, -1)] for j in range(n)]
     for i in range(n):
         for j in range(n):
@@ -74,7 +73,7 @@ def solve():
 
         #미로 회전
         r, c, n = find_to_rotate()
-        rotated = rotate_maze([[board[i][j] for j in range(c, c + n)] for i in range(r, r + n)])
+        rotated = rotate_maze([[board[i][j] for j in range(c, c + n)] for i in range(r, r + n)], n)
 
         for i in range(n):
             for j in range(n):
