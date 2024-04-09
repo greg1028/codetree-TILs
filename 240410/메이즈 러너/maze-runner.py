@@ -14,8 +14,7 @@ def rotate_maze(tmp, n):
     return new
 
 def find_to_rotate():
-    n = 2
-    while True:
+    for n in range(2, 11):
         for c in range(N - n):
             for r in range(N - n):
                 if r <= ex < r + n and c <= ey < c + n:
@@ -25,7 +24,6 @@ def find_to_rotate():
                         rx, ry = runners[i]
                         if r <= rx < r + n and c <= ry < c + n:
                             return r, c, n
-        n += 1
     return False
 
 N, M, K = map(int, input().split())
@@ -89,9 +87,8 @@ def solve():
                 x, y = x - r, y - c
                 x, y = y, n - 1 - x
                 x, y = x + r, y + c
-                runners[i] = (x, y)
-            else:
-                runners[i] = (x, y)
+
+            runners[i] = (x, y)
         ex, ey = ex - r, ey - c
         ex, ey = ey, n - 1 - ex
         ex, ey = ex + r, ey + c
