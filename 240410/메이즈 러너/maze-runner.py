@@ -1,5 +1,3 @@
-from collections import deque
-
 def debug(board):
     for i in range(len(board)):
         for j in range(len((board[0]))):
@@ -21,7 +19,10 @@ def find_to_rotate():
         for c in range(N - n):
             for r in range(N - n):
                 if r <= ex < r + n and c <= ey < c + n:
-                    for rx, ry in new_runners:
+                    for i in range(M + 1):
+                        if escape[i]:
+                            continue
+                        rx, ry = runners[i]
                         if r <= rx < r + n and c <= ry < c + n:
                             return r, c, n
         n += 1
@@ -32,8 +33,8 @@ board = [list(map(int, input().split())) for _ in range(N)] #1~N까지
 dx, dy = (-1, 1, 0, 0), (0, 0, -1, 1)
 #우회전 공식-> (i, j) -> (j, N -1 - i)
 escaped = M
-runners = deque()
-new_runners = deque()
+runners = [(-1, -1)]
+escape = [False for _ in range(N + 1)]
 ex, ey = -1 ,-1
 def solve():
     global ex, ey, escaped
@@ -45,28 +46,31 @@ def solve():
     running_dist = 0
     for k in range(1, K + 1):
         #참가자 이동
-        while runners:
-            x, y = runners.popleft()
+        for i in range(1, M + 1):
+            if escape[i]:
+                continue
+            x, y = runners[i]
+            can_move = False
             dist = abs(x - ex) + abs(y - ey)
-            candidates = []
             for d in range(4):
                 nx, ny = dx[d] + x, dy[d] + y
                 new_dist = abs(nx - ex) + abs(ny - ey)
                 if new_dist < dist:
                     if 0 <= nx < N and 0 <= ny < N and board[nx][ny] == 0:
-                        candidates.append([nx, ny])
+                        x, y = nx, ny
+                        can_move = True
                         break
 
-            if not candidates:
-                nx, ny = x, y
-            else:
-                nx, ny = candidates[0]
+            if can_move:
                 running_dist += 1
+            else:
+                continue
 
-            if (nx, ny) != (ex, ey):
-                new_runners.append((nx, ny))
+            if (x, y) != (ex, ey):
+                runners[i] = (x, y)
             else:
                 escaped -= 1
+                escape[i] = True
 
         if escaped == 0:
             break
@@ -79,16 +83,15 @@ def solve():
             for j in range(n):
                 board[r + i][c + j] = rotated[i][j]
 
-        while new_runners:
-            x, y = new_runners.popleft()
+        for i in range(1, M + 1):
+            x, y = runners[i]
             if r <= x < r + n and c <= y < c + n: #러너도 같이 회전되면 위치 변환
                 x, y = x - r, y - c
                 x, y = y, n - 1 - x
                 x, y = x + r, y + c
-                runners.append((x, y))
+                runners[i] = (x, y)
             else:
-                runners.append((x, y))
-
+                runners[i] = (x, y)
         ex, ey = ex - r, ey - c
         ex, ey = ey, n - 1 - ex
         ex, ey = ex + r, ey + c
