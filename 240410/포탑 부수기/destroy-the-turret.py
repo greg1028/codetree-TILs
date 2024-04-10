@@ -40,13 +40,13 @@ def find_attacker():
                     ax, ay = i, j
 
                 elif latest_attack == attack_time[i][j]:
-
                     if ax + ay < i + j:
                         ax, ay = i, j
 
                     elif ax + ay == i + j:
                         if ay < j:
                             ax, ay = i, j
+
 
     board[ax][ay] += N + M #포탑 강화
     return ax, ay
@@ -104,6 +104,7 @@ def attack(ax, ay, vx, vy):
                     q.append((nx, ny, path + [d]))
 
     if reached: #lazer
+        #print("lazer")
         nx, ny = ax, ay
         for d in reached_path:
             nx, ny = (nx + ldx[d] + N) % N, (ny + ldy[d] + M) % M
@@ -122,11 +123,14 @@ def attack(ax, ay, vx, vy):
     #if not find bomb
     board[vx][vy] -= board[ax][ay]
     if board[vx][vy] <= 0:
+        #print("bomb")
         board[vx][vy] = 0
         remain -= 1
 
     for d in range(8):
         nx, ny = (vx + bdx[d] + N) % N, (vy + bdy[d] + M) % M
+        if (nx, ny) == (ax, ay):
+            continue
         innocent[nx][ny] = False
         board[nx][ny] -= board[ax][ay] // 2
         if board[nx][ny] <= 0:
@@ -143,17 +147,31 @@ def repair():
 
 
 for k in range(K):
+    #print(f"{k} th state. remain :{remain}")
+    #debug(board)
     innocent = [[True for _ in range(M)] for _ in range(N)]
     ax, ay = find_attacker()
     vx, vy = find_victim(ax, ay) #자기자신 공격 안됨
+    #print(f"attacker :{ax, ay}, victim :{vx, vy}")
     attack(ax, ay, vx, vy)
     if remain == 1:
         break
+    '''print("after attack")
+    debug(board)'''
     repair()
-
+    '''print("after repair")
+    debug(board)'''
 
 ans = 0
 for i in range(N):
     for j in range(M):
         ans = max(ans, board[i][j])
 print(ans)
+
+'''
+4 5 5
+1 0 0 0 1
+10 0 10 7 0
+0 0 0 0 0
+2 0 2 0 10
+'''
