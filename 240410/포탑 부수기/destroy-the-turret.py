@@ -24,7 +24,7 @@ def debug(borad):
 
 def find_attacker():
     ax, ay, min_damage = -1, -1, 1e9
-    latest_attack = -1
+    latest_attack = 0
     for i in range(N):
         for j in range(M):
             if board[i][j] <= 0:
@@ -39,7 +39,8 @@ def find_attacker():
                     latest_attack = attack_time[i][j]
                     ax, ay = i, j
 
-                elif latest_attack == attack_time:
+                elif latest_attack == attack_time[i][j]:
+
                     if ax + ay < i + j:
                         ax, ay = i, j
 
@@ -67,7 +68,7 @@ def find_victim(ax, ay):
                     oldest_attack = attack_time[i][j]
                     vx, vy = i, j
 
-                elif attack_time == oldest_attack:
+                elif attack_time[i][j] == oldest_attack:
                     if vx + vy > i + j:
                         vx, vy = i, j
 
@@ -149,6 +150,7 @@ for k in range(K):
     if remain == 1:
         break
     repair()
+
 
 ans = 0
 for i in range(N):
