@@ -1,29 +1,23 @@
 from collections import deque
-
-
 def debug(board):
     for i in range(len(board)):
         for j in range(len((board[0]))):
             print(board[i][j], end=" ")
         print()
     print()
-
-
 def rotate_maze(tmp):
     n = len(tmp)
     return [[tmp[i][j] - 1 if tmp[i][j] > 0 else tmp[i][j] for i in range(n - 1, -1, -1)] for j in range(n)]
-
-
 def find_to_rotate():
     for n in range(2, 11):
-        for c in range(N):
-            for r in range(N):
+        for r in range(N):
+            for c in range(N):
                 if r <= ex < r + n and c <= ey < c + n:
                     for rx, ry in new_runners:
                         if r <= rx < r + n and c <= ry < c + n:
+                            #print("ex, ey", ex, ey, "rx, ry", rx, ry)
                             return r, c, n
     return False
-
 
 N, M, K = map(int, input().split())
 board = [list(map(int, input().split())) for _ in range(N)]  # 1~N까지
@@ -105,10 +99,10 @@ def solve():
         ex, ey = ex - r, ey - c
         ex, ey = ey, n - 1 - ex
         ex, ey = ex + r, ey + c
-        #print("after rotate maze")
-        #print("ex, ey", ex, ey)
-        #print("runners", runners)
-        #debug(board)
+        '''print("after rotate maze")
+        print("ex, ey", ex, ey)
+        print("runners", runners)
+        debug(board)'''
     print(running_dist)
     print(ex + 1, ey + 1)
     # 이동거리 합과 출구 좌표
@@ -116,27 +110,25 @@ def solve():
 
 solve()
 '''
-10 10 100
-7 7 1 0 4 8 3 1 0 9
-2 1 8 4 1 9 5 2 3 7
-7 2 9 8 6 3 6 8 8 1
-1 5 9 0 4 0 9 5 0 8
-0 0 0 8 4 1 6 0 1 4
-9 5 8 9 2 9 7 0 0 7
-3 0 7 1 6 5 3 2 6 0
-9 2 7 3 6 6 7 6 6 8
-0 5 0 9 4 9 3 4 2 3
-9 0 3 0 2 6 0 4 8 7
-5 2
-9 3
-5 2
-4 4
+10 9 59
+1 7 4 8 3 4 6 5 1 6
+0 2 2 6 6 6 9 9 6 7
+7 4 4 9 2 2 2 2 6 5
+2 8 9 7 0 6 0 5 4 9
+1 8 6 9 8 5 4 4 6 6
+2 9 5 5 7 9 0 5 0 3
+6 9 6 5 5 7 7 5 9 0
+9 6 5 6 4 0 8 6 8 0
+0 0 9 2 7 7 7 7 5 5
+3 9 0 2 2 8 3 0 2 0
 7 10
+7 10
+4 5
+10 3
+4 5
+10 3
+10 10
+10 10
+2 1
 6 9
-5 8
-7 10
-10 7
-5 8
-10 4
-
 '''
