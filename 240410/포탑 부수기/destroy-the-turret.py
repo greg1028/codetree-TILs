@@ -77,6 +77,7 @@ def find_victim(ax, ay):
     return vx, vy
 
 def attack(ax, ay, vx, vy):
+    global remain
     attack_time[ax][ay] = k + 1
     innocent[ax][ay] = False
     innocent[vx][vy] = False
@@ -109,17 +110,19 @@ def attack(ax, ay, vx, vy):
             board[nx][ny] -= board[ax][ay] // 2
             if board[nx][ny] <= 0:
                 board[nx][ny] = 0
+                remain -= 1
 
         board[vx][vy] -= board[ax][ay]
         if board[vx][vy] <= 0:
             board[vx][vy] = 0
-
+            remain -= 1
         return
 
     #if not find bomb
     board[vx][vy] -= board[ax][ay]
     if board[vx][vy] <= 0:
         board[vx][vy] = 0
+        remain -= 1
 
     for d in range(8):
         nx, ny = (vx + bdx[d] + N) % N, (vy + bdy[d] + M) % M
@@ -127,6 +130,7 @@ def attack(ax, ay, vx, vy):
         board[nx][ny] -= board[ax][ay] // 2
         if board[nx][ny] <= 0:
             board[nx][ny] = 0
+            remain -= 1
     return
 
 def repair():
