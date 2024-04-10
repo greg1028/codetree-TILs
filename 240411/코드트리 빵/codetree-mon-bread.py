@@ -16,25 +16,34 @@ def debug(board):
 def find_base_camp(i):
     x, y = con[i]
     q = deque()
-    q.append((x, y))
+    q.append((x, y, 0))
     visited = [[False for _ in range(N)] for _ in range(N)]
     visited[x][y] = True
+    min_dist = 1e9
+    candidates = []
     while q:
-        x, y = q.popleft()
+        x, y, dist = q.popleft()
         for d in range(4):
             nx, ny = dx[d] + x, dy[d] + y
             if 0 <= nx < N and 0 <= ny < N and not visited[nx][ny]:
                 visited[nx][ny] = True
                 if root[nx][ny]:
                     if board[nx][ny] == 1: #베이스캠프라면
-                        board[nx][ny] = 0
-                        root[nx][ny] = False
-                        people_loc[i] = (True, nx, ny)
-                        return
-                    q.append((nx, ny))
+                        if min_dist > dist + 1:
+                            min_dist = dist + 1
+                            candidates = [(nx, ny)]
 
-    raise "find_base_camp"
+                        elif min_dist == dist + 1:
+                            candidates.append((nx, ny))
 
+                    if min_dist > dist + 1:
+                        q.append((nx, ny, dist + 1))
+    candidates.sort(key=lambda x:[x[0], x[1]])
+    x, y = candidates[0]
+    board[x][y] = 0
+    root[x][y] = False
+    people_loc[i] = (True, x, y)
+    return
 def move(i):
     visited = [[False for _ in range(N)] for _ in range(N)]
     _, sx, sy = people_loc[i]
