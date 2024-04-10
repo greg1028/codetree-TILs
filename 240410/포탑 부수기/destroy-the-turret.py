@@ -109,10 +109,11 @@ def attack(ax, ay, vx, vy):
         for d in reached_path:
             nx, ny = (nx + ldx[d] + N) % N, (ny + ldy[d] + M) % M
             innocent[nx][ny] = False
-            board[nx][ny] -= board[ax][ay] // 2
-            if board[nx][ny] <= 0:
-                board[nx][ny] = 0
-                remain -= 1
+            if board[nx][ny] > 0:
+                board[nx][ny] -= board[ax][ay] // 2
+                if board[nx][ny] <= 0:
+                    board[nx][ny] = 0
+                    remain -= 1
 
         board[vx][vy] -= board[ax][ay]
         if board[vx][vy] <= 0:
@@ -131,11 +132,12 @@ def attack(ax, ay, vx, vy):
         nx, ny = (vx + bdx[d] + N) % N, (vy + bdy[d] + M) % M
         if (nx, ny) == (ax, ay):
             continue
-        innocent[nx][ny] = False
-        board[nx][ny] -= board[ax][ay] // 2
-        if board[nx][ny] <= 0:
-            board[nx][ny] = 0
-            remain -= 1
+        if board[nx][ny] > 0: #포탑이 있다면 공격
+            innocent[nx][ny] = False
+            board[nx][ny] -= board[ax][ay] // 2
+            if board[nx][ny] <= 0:
+                board[nx][ny] = 0
+                remain -= 1
     return
 
 def repair():
@@ -169,9 +171,11 @@ for i in range(N):
 print(ans)
 
 '''
-4 5 5
-1 0 0 0 1
-10 0 10 7 0
-0 0 0 0 0
-2 0 2 0 10
+5 10 704
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 2186
+0 0 0 0 4346 0 0 0 0 0
+0 0 0 0 3889 3148 1500 0 0 0
+0 3440 0 0 17 0 0 0 0 0
+
 '''
