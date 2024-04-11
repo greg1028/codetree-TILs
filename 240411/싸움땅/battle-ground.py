@@ -1,32 +1,12 @@
-#플레이어 이동.
-'''
-이동 방향에 벽 있으면 반대로 한칸
-'''
-'''
-    1. 이동 방향에 플레이어 없는 경우
-        총이 있으면 획득.
-        내가 총이 있으면 공격력이 더 쌘 총 획득 후 내 총을 내려놓음
-'''
-
-'''
-    2. 이동 방향에 플레이어 있는 경우
-        결투 : 초기능력치 + 총의 공격력이 큰 놈이 이김.
-                합 같으면 초기 능력치가 높은 놈이 이김.
-        
-        승자 : 승자의 전투력 (초기 능력치 + 총 공격력) - (패자의 전투력)을 포인트로 얻음
-            해당칸에 있는 총과 내 총중 공격력이 높은 총을 획득 후 나머지 총을 내려놓음
-        
-        패자 : 본인이 가지고 있는 총을 격자에 내려놓고 원래 방향으로 이동. 
-                이동 후 총이 있으면 공격력이 높은 총을 획득 후 나머지 총들은 해당 격자에 내려놓음.
-                
-            이동칸에 다른 플레이어 있거나 범위 밖이면 90도씩 우회전 후 빈칸으로 이동.
-                          
-'''
-#각 총의 정보들 : n*n 격자에 heap을 넣어서 구현 부호 신경 잘 쓰기.
-# 사람의 정보. : 새로운 사람 위치 격자와, 사람의 위치와 점수를 기록하는 점수를 가진 리스트 작성.
-#좌표 입력 신경 잘 쓰기
 import heapq
 
+def debug(board):
+    for i in range(N):
+        for j in range(N):
+            print(board[i][j],end=" ")
+        print()
+    print()
+    print()
 def move(i):
     [x, y], d, s_ability, g_ability = players[i]
     board[x][y] = 0 #이 좌표에 나밖에 없다는 것이 확실해야 됨.
@@ -79,6 +59,7 @@ def move(i):
 
         #승자는 전투력 차이만큼 점수 획득
         scores[winner] += (players[winner][2] + players[winner][3]) - (players[losser][2] + players[losser][3])
+
         wx, wy = players[winner][0]
         board[wx][wy] = winner #승자위치
 
@@ -109,6 +90,8 @@ def move(i):
                 if players[winner][3] > 0:
                     heapq.heappush(guns[wx][wy], -players[winner][3])
                 players[winner][3] = max_gun
+            else:
+                heapq.heappush(guns[wx][wy], -max_gun)
 
 #초기 설정 및 입력 부분
 dx, dy = (-1, 0, 1, 0), (0, 1, 0, -1)
@@ -131,8 +114,12 @@ for i in range(1, M + 1):
 
 #실제로 동작
 for k in range(K):
+
     for i in range(1, M + 1):
+
         move(i) #한명씩 순차적으로 이동.
+
+
 
 #정답 출력
 ans = ""
